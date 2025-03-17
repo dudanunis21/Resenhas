@@ -1,205 +1,312 @@
-public interface Prototype {
-    Prototype clone();
-}
+Codigo antes da alteracao: 
+using System;
+using System.Collections.Generic;
 
-import java.util.Objects;
+namespace LovePet
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Criando instâncias de alguns objetos
+            PetShop lovepet = new PetShop("LovePet");
 
-public abstract class Shape implements Prototype {
-    public int x;
-    public int y;
-    public String color;
+            // Adicionando veterinários
+            lovepet.AdicionarVeterinario(new Veterinario("Dr. Ana", "VET001"));
+            lovepet.AdicionarVeterinario(new Veterinario("Dr. Pedro", "VET002"));
 
-    public Shape() {}
+            // Adicionando secretárias
+            lovepet.AdicionarSecretaria(new Secretaria("Juliana"));
+            lovepet.AdicionarSecretaria(new Secretaria("Mariana"));
 
-    public Shape(Shape target) {
-        if (target != null) {
-            this.x = target.x;
-            this.y = target.y;
-            this.color = target.color;
+            // Adicionando pacientes
+            lovepet.AdicionarPaciente(new Paciente("Rex", 5, "Pastor Alemão"));
+            lovepet.AdicionarPaciente(new Paciente("Bella", 3, "Labrador"));
+
+            // Cadastro de laudo
+            lovepet.AdicionarLaudo(new Laudo("Exame de rotina", "Rex", "Dr. Ana", DateTime.Now));
+
+            // Controlando ração
+            lovepet.AdicionarRacaoEntrada(50); // 50 kg de ração
+            lovepet.AdicionarRacaoSaida(20); // 20 kg de ração saindo
+
+            // Relatório do sistema
+            lovepet.ImprimirRelatorio();
         }
     }
 
-    @Override
-    public abstract Shape clone();
+    public class PetShop
+    {
+        public string Nome { get; set; }
+        public List<Veterinario> Veterinarios { get; set; }
+        public List<Secretaria> Secretarias { get; set; }
+        public List<Paciente> Pacientes { get; set; }
+        public List<Laudo> Laudos { get; set; }
+        public double QuantidadeRacao { get; set; }
 
-    @Override
-    public boolean equals(Object object2) {
-        if (!(object2 instanceof Shape)) return false;
-        Shape shape2 = (Shape) object2;
-        return shape2.x == x && shape2.y == y && Objects.equals(shape2.color, color);
-    }
-}
+        public PetShop(string nome)
+        {
+            Nome = nome;
+            Veterinarios = new List<Veterinario>();
+            Secretarias = new List<Secretaria>();
+            Pacientes = new List<Paciente>();
+            Laudos = new List<Laudo>();
+            QuantidadeRacao = 0;
+        }
 
-public class Rectangle extends Shape {
-    public int width;
-    public int height;
+        public void AdicionarVeterinario(Veterinario veterinario)
+        {
+            Veterinarios.Add(veterinario);
+        }
 
-    public Rectangle() {}
+        public void AdicionarSecretaria(Secretaria secretaria)
+        {
+            Secretarias.Add(secretaria);
+        }
 
-    public Rectangle(Rectangle target) {
-        super(target);
-        if (target != null) {
-            this.width = target.width;
-            this.height = target.height;
+        public void AdicionarPaciente(Paciente paciente)
+        {
+            Pacientes.Add(paciente);
+        }
+
+        public void AdicionarLaudo(Laudo laudo)
+        {
+            Laudos.Add(laudo);
+        }
+
+        public void AdicionarRacaoEntrada(double quantidade)
+        {
+            QuantidadeRacao += quantidade;
+        }
+
+        public void AdicionarRacaoSaida(double quantidade)
+        {
+            QuantidadeRacao -= quantidade;
+        }
+
+        public void ImprimirRelatorio()
+        {
+            Console.WriteLine($"Relatório da Clínica {Nome}\n");
+
+            Console.WriteLine("Veterinários:");
+            foreach (var vet in Veterinarios)
+            {
+                Console.WriteLine($"{vet.Nome} - {vet.Codigo}");
+            }
+
+            Console.WriteLine("\nSecretarias:");
+            foreach (var sec in Secretarias)
+            {
+                Console.WriteLine(sec.Nome);
+            }
+
+            Console.WriteLine("\nPacientes:");
+            foreach (var paciente in Pacientes)
+            {
+                Console.WriteLine($"{paciente.Nome} - {paciente.Idade} anos - {paciente.Raca}");
+            }
+
+            Console.WriteLine("\nLaudos:");
+            foreach (var laudo in Laudos)
+            {
+                Console.WriteLine($"{laudo.Descricao} - {laudo.Paciente} - {laudo.Veterinario} - {laudo.Data}");
+            }
+
+            Console.WriteLine($"\nQuantidade de ração disponível: {QuantidadeRacao} kg");
         }
     }
 
-    @Override
-    public Shape clone() {
-        return new Rectangle(this);
-    }
+    public class Veterinario
+    {
+        public string Nome { get; set; }
+        public string Codigo { get; set; }
 
-    @Override
-    public boolean equals(Object object2) {
-        if (!(object2 instanceof Rectangle) || !super.equals(object2)) return false;
-        Rectangle shape2 = (Rectangle) object2;
-        return shape2.width == width && shape2.height == height;
-    }
-}
-
-public class Circle extends Shape {
-    public int radius;
-
-    public Circle() {}
-
-    public Circle(Circle target) {
-        super(target);
-        if (target != null) {
-            this.radius = target.radius;
+        public Veterinario(string nome, string codigo)
+        {
+            Nome = nome;
+            Codigo = codigo;
         }
     }
 
-    @Override
-    public Shape clone() {
-        return new Circle(this);
+    public class Secretaria
+    {
+        public string Nome { get; set; }
+
+        public Secretaria(string nome)
+        {
+            Nome = nome;
+        }
     }
 
-    @Override
-    public boolean equals(Object object2) {
-        if (!(object2 instanceof Circle) || !super.equals(object2)) return false;
-        Circle shape2 = (Circle) object2;
-        return shape2.radius == radius;
-    }
-}
+    public class Paciente
+    {
+        public string Nome { get; set; }
+        public int Idade { get; set; }
+        public string Raca { get; set; }
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Application {
-    List<Shape> shapes = new ArrayList<>();
-
-    Application() {
-        Circle circle = new Circle();
-        circle.x = 10;
-        circle.y = 10;
-        circle.radius = 20;
-        shapes.add(circle);
-
-        Circle anotherCircle = (Circle) circle.clone();
-        shapes.add(anotherCircle);
-
-        Rectangle rectangle = new Rectangle();
-        rectangle.width = 10;
-        rectangle.height = 20;
-        shapes.add(rectangle);
+        public Paciente(string nome, int idade, string raca)
+        {
+            Nome = nome;
+            Idade = idade;
+            Raca = raca;
+        }
     }
 
-    void businessLogic() {
-        List<Shape> shapesCopy = new ArrayList<>();
-        for (Shape s : shapes) {
-            shapesCopy.add(s.clone());
+    public class Laudo
+    {
+        public string Descricao { get; set; }
+        public string Paciente { get; set; }
+        public string Veterinario { get; set; }
+        public DateTime Data { get; set; }
+
+        public Laudo(string descricao, string paciente, string veterinario, DateTime data)
+        {
+            Descricao = descricao;
+            Paciente = paciente;
+            Veterinario = veterinario;
+            Data = data;
+        }
+    }
+} 
+
+
+
+Codigo depois da alteracao/refatoracao:
+
+using System;
+using System.Collections.Generic;
+
+namespace LovePet
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Criando instâncias de alguns objetos
+            PetShop lovepet = new PetShop("LovePet");
+
+            // Adicionando veterinários
+            var vet1 = new Veterinario("Dr. Ana", "VET001");
+            var vet2 = (Veterinario)vet1.Clone();
+            vet2.Nome = "Dr. Pedro";
+            vet2.Codigo = "VET002";
+            lovepet.AdicionarVeterinario(vet1);
+            lovepet.AdicionarVeterinario(vet2);
+
+            // Adicionando pacientes
+            var paciente1 = new Paciente("Rex", 5, "Pastor Alemão");
+            var paciente2 = (Paciente)paciente1.Clone();
+            paciente2.Nome = "Bella";
+            paciente2.Idade = 3;
+            paciente2.Raca = "Labrador";
+            lovepet.AdicionarPaciente(paciente1);
+            lovepet.AdicionarPaciente(paciente2);
+
+            // Cadastro de laudo
+            var laudo1 = new Laudo("Exame de rotina", "Rex", "Dr. Ana", DateTime.Now);
+            lovepet.AdicionarLaudo(laudo1);
+
+            // Relatório do sistema
+            lovepet.ImprimirRelatorio();
+        }
+    }
+
+    public interface IPrototype
+    {
+        object Clone();
+    }
+
+    public class PetShop
+    {
+        public string Nome { get; set; }
+        public List<Veterinario> Veterinarios { get; set; }
+        public List<Paciente> Pacientes { get; set; }
+        public List<Laudo> Laudos { get; set; }
+
+        public PetShop(string nome)
+        {
+            Nome = nome;
+            Veterinarios = new List<Veterinario>();
+            Pacientes = new List<Paciente>();
+            Laudos = new List<Laudo>();
         }
 
-        // shapesCopy contém cópias exatas dos shapes originais
+        public void AdicionarVeterinario(Veterinario veterinario) => Veterinarios.Add(veterinario);
+        public void AdicionarPaciente(Paciente paciente) => Pacientes.Add(paciente);
+        public void AdicionarLaudo(Laudo laudo) => Laudos.Add(laudo);
+
+        public void ImprimirRelatorio()
+        {
+            Console.WriteLine($"Relatório da Clínica {Nome}\n");
+
+            Console.WriteLine("Veterinários:");
+            foreach (var vet in Veterinarios)
+            {
+                Console.WriteLine($"{vet.Nome} - {vet.Codigo}");
+            }
+
+            Console.WriteLine("\nPacientes:");
+            foreach (var paciente in Pacientes)
+            {
+                Console.WriteLine($"{paciente.Nome} - {paciente.Idade} anos - {paciente.Raca}");
+            }
+
+            Console.WriteLine("\nLaudos:");
+            foreach (var laudo in Laudos)
+            {
+                Console.WriteLine($"{laudo.Descricao} - {laudo.Paciente} - {laudo.Veterinario} - {laudo.Data}");
+            }
+        }
     }
 
-    public static void main(String[] args) {
-        Application app = new Application();
-        app.businessLogic();
-    }
-}
+    public class Veterinario : IPrototype
+    {
+        public string Nome { get; set; }
+        public string Codigo { get; set; }
 
+        public Veterinario(string nome, string codigo)
+        {
+            Nome = nome;
+            Codigo = codigo;
+        }
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class BundledShapeCache {
-    private Map<String, Shape> cache = new HashMap<>();
-
-    public BundledShapeCache() {
-        Circle circle = new Circle();
-        circle.x = 5;
-        circle.y = 7;
-        circle.radius = 45;
-        circle.color = "Green";
-        cache.put("Big green circle", circle);
-
-        Rectangle rectangle = new Rectangle();
-        rectangle.x = 6;
-        rectangle.y = 9;
-        rectangle.width = 8;
-        rectangle.height = 10;
-        rectangle.color = "Blue";
-        cache.put("Medium blue rectangle", rectangle);
+        public object Clone() => MemberwiseClone();
     }
 
-    public Shape put(String key, Shape shape) {
-        cache.put(key, shape);
-        return shape;
+    public class Paciente : IPrototype
+    {
+        public string Nome { get; set; }
+        public int Idade { get; set; }
+        public string Raca { get; set; }
+
+        public Paciente(string nome, int idade, string raca)
+        {
+            Nome = nome;
+            Idade = idade;
+            Raca = raca;
+        }
+
+        public object Clone() => MemberwiseClone();
     }
 
-    public Shape get(String key) {
-        return cache.get(key).clone();
-    }
-}
+    public class Laudo : IPrototype
+    {
+        public string Descricao { get; set; }
+        public string Paciente { get; set; }
+        public string Veterinario { get; set; }
+        public DateTime Data { get; set; }
 
+        public Laudo(string descricao, string paciente, string veterinario, DateTime data)
+        {
+            Descricao = descricao;
+            Paciente = paciente;
+            Veterinario = veterinario;
+            Data = data;
+        }
 
-public class Demo {
-    public static void main(String[] args) {
-        BundledShapeCache cache = new BundledShapeCache();
-
-        Shape shape1 = cache.get("Big green circle");
-        Shape shape2 = cache.get("Medium blue rectangle");
-
-        System.out.println(shape1);
-        System.out.println(shape2);
-    }
-}
-
-
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
-class ShapeTest {
-
-    @Test
-    void testCircleClone() {
-        Circle circle = new Circle();
-        circle.x = 10;
-        circle.y = 20;
-        circle.radius = 30;
-        circle.color = "Red";
-
-        Circle clone = (Circle) circle.clone();
-
-        assertEquals(circle, clone);
-        assertNotSame(circle, clone);
-    }
-
-    @Test
-    void testRectangleClone() {
-        Rectangle rectangle = new Rectangle();
-        rectangle.x = 5;
-        rectangle.y = 10;
-        rectangle.width = 15;
-        rectangle.height = 20;
-        rectangle.color = "Blue";
-
-        Rectangle clone = (Rectangle) rectangle.clone();
-
-        assertEquals(rectangle, clone);
-        assertNotSame(rectangle, clone);
+        public object Clone() => MemberwiseClone();
     }
 }
+
 
 

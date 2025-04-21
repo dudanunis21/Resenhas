@@ -94,3 +94,113 @@ public class SistemaGestaoAsilo {
         scanner.close();
     }
 }
+
+
+codigo com comentarios dentro
+
+// Projeto: Sistema de Gestão para Asilo
+// Autor: Eduarda Silva Santos Nunis
+// Objetivo: Armazenar documentos dos pacientes e gerenciar medicamentos necessários
+
+import java.util.ArrayList; // Comentário: Considerar o uso de List interface para maior flexibilidade
+import java.util.HashMap; // Comentário: Talvez usar TreeMap para garantir ordenação dos medicamentos
+import java.util.Scanner; // Comentário: Poderíamos refatorar a entrada para usar uma classe separada
+
+// Classe Paciente: Representa os pacientes do asilo
+class Paciente {
+    // Atributos do Paciente
+    private String nome; // Comentário: Garantir que nomes sejam únicos ou validar no momento da inserção
+    private int idade; // Comentário: Idades negativas ou valores extremos devem ser evitados
+    private ArrayList<String> documentos; // Ex.: RG, CPF, plano de saúde
+    private HashMap<String, String> medicamentos; // Nome do medicamento e frequência
+
+    // Construtor: Inicializa os atributos do paciente
+    public Paciente(String nome, int idade, ArrayList<String> documentos, HashMap<String, String> medicamentos) {
+        this.nome = nome;
+        this.idade = idade;
+        this.documentos = documentos;
+        this.medicamentos = medicamentos;
+    }
+
+    // Método para exibir os dados do paciente
+    public void exibirDados() {
+        // Sugestão: Evitar prints diretamente aqui, usar logger para maior controle
+        System.out.println("Nome: " + nome); // Comentário: Formatar para JSON ou outro padrão seria útil
+        System.out.println("Idade: " + idade + " anos"); // Comentário: Poderíamos verificar se idade é um número válido
+        System.out.println("Documentos: " + String.join(", ", documentos)); // Exemplo: RG, CPF juntos
+        System.out.println("Medicamentos:");
+        for (String medicamento : medicamentos.keySet()) {
+            System.out.println("  - " + medicamento + ": " + medicamentos.get(medicamento));
+            // Comentário: Validação adicional pode ser feita aqui (ex.: checar se dosagem está em formato válido)
+        }
+    }
+
+    // Getter para o nome: Usado na busca de pacientes
+    public String getNome() {
+        return nome; // Comentário: Garantir retorno não-nulo ou validado
+    }
+}
+
+// Classe SistemaGestaoAsilo: Gerencia os pacientes do sistema
+public class SistemaGestaoAsilo {
+    // Lista de Pacientes: Considerar persistência no banco de dados
+    private static ArrayList<Paciente> pacientes = new ArrayList<>();
+
+    // Método para adicionar paciente ao sistema
+    public static void adicionarPaciente(Paciente paciente) {
+        pacientes.add(paciente);
+        System.out.println("Paciente " + paciente.getNome() + " adicionado com sucesso!");
+        // Comentário: Validar se pacientes com o mesmo nome podem ser adicionados
+    }
+
+    // Método para buscar paciente pelo nome
+    public static void buscarPaciente(String nome) {
+        // Comentário: Substituir busca linear por estrutura mais eficiente para grandes quantidades de dados
+        for (Paciente paciente : pacientes) {
+            if (paciente.getNome().equalsIgnoreCase(nome)) { // Sugestão: Usar equals para diferenciação estrita
+                System.out.println("\nPaciente encontrado:");
+                paciente.exibirDados();
+                return;
+            }
+        }
+        System.out.println("Paciente não encontrado."); // Comentário: Poderíamos exibir sugestões caso a busca falhe
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in); // Sugestão: Fechar scanner para evitar vazamentos de recursos
+
+        // Criando pacientes (exemplo)
+        ArrayList<String> documentos1 = new ArrayList<>();
+        documentos1.add("RG: 123456"); // Comentário: Validação no formato de documentos seria ideal
+        documentos1.add("CPF: 987654321");
+
+        HashMap<String, String> medicamentos1 = new HashMap<>();
+        medicamentos1.put("Remédio A", "2x ao dia"); // Sugestão: Criar classe Medicamento para melhor organização
+        medicamentos1.put("Remédio B", "1x ao dia");
+
+        Paciente paciente1 = new Paciente("João Silva", 75, documentos1, medicamentos1);
+
+        ArrayList<String> documentos2 = new ArrayList<>();
+        documentos2.add("RG: 654321");
+        documentos2.add("CPF: 123456789");
+
+        HashMap<String, String> medicamentos2 = new HashMap<>();
+        medicamentos2.put("Remédio C", "3x ao dia");
+        medicamentos2.put("Remédio D", "1x por semana");
+
+        Paciente paciente2 = new Paciente("Eduarda Nunis", 82, documentos2, medicamentos2);
+
+        // Adicionando pacientes ao sistema
+        adicionarPaciente(paciente1); // Sugestão: Verificar duplicatas antes de adicionar
+        adicionarPaciente(paciente2);
+
+        // Buscando pacientes pelo nome
+        System.out.print("\nDigite o nome do paciente para buscar: ");
+        String nomeBusca = scanner.nextLine();
+        buscarPaciente(nomeBusca);
+
+        scanner.close(); // Boa prática: Fechar scanner para evitar vazamento de recursos
+    }
+}
+
+

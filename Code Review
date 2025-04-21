@@ -1,0 +1,96 @@
+// Projeto: Sistema de Gestão para Asilo
+// Autor: Eduarda Silva Santos Nunis
+// Objetivo: Armazenar documentos dos pacientes e gerenciar medicamentos necessários
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+class Paciente {
+    // Atributos do Paciente
+    private String nome;
+    private int idade;
+    private ArrayList<String> documentos; // Ex.: RG, CPF, plano de saúde
+    private HashMap<String, String> medicamentos; // Nome do medicamento e frequência
+
+    // Construtor
+    public Paciente(String nome, int idade, ArrayList<String> documentos, HashMap<String, String> medicamentos) {
+        this.nome = nome;
+        this.idade = idade;
+        this.documentos = documentos;
+        this.medicamentos = medicamentos;
+    }
+
+    // Método para exibir os dados do paciente
+    public void exibirDados() {
+        System.out.println("Nome: " + nome);
+        System.out.println("Idade: " + idade + " anos");
+        System.out.println("Documentos: " + String.join(", ", documentos));
+        System.out.println("Medicamentos:");
+        for (String medicamento : medicamentos.keySet()) {
+            System.out.println("  - " + medicamento + ": " + medicamentos.get(medicamento));
+        }
+    }
+
+    public String getNome() {
+        return nome;
+    }
+}
+
+public class SistemaGestaoAsilo {
+    private static ArrayList<Paciente> pacientes = new ArrayList<>(); // Lista para armazenar os pacientes
+
+    // Método para adicionar paciente
+    public static void adicionarPaciente(Paciente paciente) {
+        pacientes.add(paciente);
+        System.out.println("Paciente " + paciente.getNome() + " adicionado com sucesso!");
+    }
+
+    // Método para buscar paciente pelo nome
+    public static void buscarPaciente(String nome) {
+        for (Paciente paciente : pacientes) {
+            if (paciente.getNome().equalsIgnoreCase(nome)) {
+                System.out.println("\nPaciente encontrado:");
+                paciente.exibirDados();
+                return;
+            }
+        }
+        System.out.println("Paciente não encontrado.");
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Criando pacientes (exemplo)
+        ArrayList<String> documentos1 = new ArrayList<>();
+        documentos1.add("RG: 123456");
+        documentos1.add("CPF: 987654321");
+
+        HashMap<String, String> medicamentos1 = new HashMap<>();
+        medicamentos1.put("Remédio A", "2x ao dia");
+        medicamentos1.put("Remédio B", "1x ao dia");
+
+        Paciente paciente1 = new Paciente("João Silva", 75, documentos1, medicamentos1);
+
+        ArrayList<String> documentos2 = new ArrayList<>();
+        documentos2.add("RG: 654321");
+        documentos2.add("CPF: 123456789");
+
+        HashMap<String, String> medicamentos2 = new HashMap<>();
+        medicamentos2.put("Remédio C", "3x ao dia");
+        medicamentos2.put("Remédio D", "1x por semana");
+
+        Paciente paciente2 = new Paciente("Eduarda Nunis", 82, documentos2, medicamentos2);
+
+        // Adicionando pacientes ao sistema
+        adicionarPaciente(paciente1);
+        adicionarPaciente(paciente2);
+
+        // Buscando pacientes pelo nome
+        System.out.print("\nDigite o nome do paciente para buscar: ");
+        String nomeBusca = scanner.nextLine();
+        buscarPaciente(nomeBusca);
+
+        scanner.close();
+    }
+}
